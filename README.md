@@ -1,2 +1,1 @@
-# moldisc
-AI platform for autonomous discovery of organic molecules
+# MolDisc 1.0 will be available soon . . .
