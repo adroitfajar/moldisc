@@ -17,4 +17,4 @@ pip install -r requirements_gpt.txt
 
 ## Tutorial
 
-A step=by-step guide for molecular generation is available in this Jupter tutorial.
+A step-by-step guide for molecular generation is available in this [Jupter tutorial] (./example.ipynb).
