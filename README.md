@@ -5,6 +5,9 @@
 
 ## Installation
 
+MolDisc requires a [conda environment](https://www.anaconda.com/). 
+We recomment miniconda for non-commercial setting. Installation guide for miniconda is available here https://www.anaconda.com/docs/getting-started/miniconda/install.
+
 <!--Moldisc requires both tensorflow and torch environments. Due to possible version conflicts of tensorflow and torch MolDisc requires two separate conda environments for SMILES-X and GPT. In order to create and install the conda environments  run the requirements_main.txt and requirements_gpt.txt as follows -->
 
 #### Setting up environment for SMILES-X
