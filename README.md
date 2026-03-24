@@ -1,15 +1,23 @@
 # MolDisc 1.0 will be available soon . . .
 
-## Installation
 
 MolDisc is an autonomus molecualr discovery tool based on SMILES (Simplified Molecular Input Line Entry System). 
 
-MolDisc is developed using following existing tools
+## MolDisc Pipeline
 
+MolDisc is developed using following existing tools,
+- SMILESX (https://github.com/Lambard-ML-Team/SMILES-X)
+- GPT2 (https://huggingface.co/openai-community/gpt2)
+- RDKit (https://www.rdkit.org/)
 
+The overall pipline of MolDisc is shown the following figure.
 
 ![Pipeline](moldisc_pipeline.jpg)
 
+Input data to the MolDisc has to be provided as a label.csv and unlabeled.csv files containing SMILES with labels and only SMILES respectively. At the first state of pipeline SMILESX is trained with labeled data. In the second stage of the pipeline both labeled and unlabeled SMILES are used to finetune the pretrained GPT model. From the trained GPT model new SMILES are generated which are passed through RDKit to sanitize to retain valid molecules. Next the generated SMILES are    
+
+
+## Installation
 
 MolDisc requires a [conda environment](https://www.anaconda.com/). 
 We recommend miniconda for non-commercial usage. Installation guide for miniconda is available here https://www.anaconda.com/docs/getting-started/miniconda/install.
@@ -18,7 +26,7 @@ We recommend miniconda for non-commercial usage. Installation guide for minicond
 
 #### Setting up environment for SMILES-X
 
-Execure the following command to create the environment for SMILES-X
+Execute the following command to create the environment for SMILES-X
 
 ```
 conda create --name main_smilesx python=3.10
@@ -32,7 +40,7 @@ pip install -r requirements_main.txt
 
 #### Setting up environment for GPT2
 
-Next, Execure the following command to create the environment for GPT2
+Next, Execute the following command to create the environment for GPT2
 
 ```
 conda create env subGPT python=3.10
@@ -57,7 +65,6 @@ A step-by-step guide for molecular generation is available in this [Jupyter tuto
 
 Use the following reference to cite MolDisc
 
-'''
+```
 -- ,-- ,-- , 
-
-'''
+```
