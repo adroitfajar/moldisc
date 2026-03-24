@@ -1,12 +1,18 @@
 # MolDisc 1.0 will be available soon . . .
 
-
-
-
 ## Installation
 
+MolDisc is an autonomus molecualr discovery tool based on SMILES (Simplified Molecular Input Line Entry System). 
+
+MolDisc is developed using following existing tools
+
+
+
+![Pipeline](moldisc_pipeline.jpg)
+
+
 MolDisc requires a [conda environment](https://www.anaconda.com/). 
-We recomment miniconda for non-commercial setting. Installation guide for miniconda is available here https://www.anaconda.com/docs/getting-started/miniconda/install.
+We recommend miniconda for non-commercial usage. Installation guide for miniconda is available here https://www.anaconda.com/docs/getting-started/miniconda/install.
 
 <!--Moldisc requires both tensorflow and torch environments. Due to possible version conflicts of tensorflow and torch MolDisc requires two separate conda environments for SMILES-X and GPT. In order to create and install the conda environments  run the requirements_main.txt and requirements_gpt.txt as follows -->
 
@@ -46,3 +52,12 @@ pip install -r requirements_gpt.txt
 ## Tutorial
 
 A step-by-step guide for molecular generation is available in this [Jupyter tutorial](./example.ipynb).
+
+## Reference
+
+Use the following reference to cite MolDisc
+
+'''
+-- ,-- ,-- , 
+
+'''
