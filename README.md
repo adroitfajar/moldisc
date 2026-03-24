@@ -14,7 +14,7 @@ The overall pipline of MolDisc is shown the following figure.
 
 ![Pipeline](moldisc_pipeline.jpg)
 
-Input data to the MolDisc has to be provided as a label.csv and unlabeled.csv files containing SMILES with labels and only SMILES respectively. At the first state of pipeline SMILESX is trained with labeled data. In the second stage of the pipeline both labeled and unlabeled SMILES are used to finetune the pretrained GPT model. From the trained GPT model new SMILES are generated which are passed through RDKit to sanitize to retain valid molecules. Next the generated SMILES are    
+Input data to the MolDisc has to be provided as a label.csv and unlabeled.csv files containing SMILES with labels and only SMILES respectively. At the first state of pipeline SMILESX is trained with labeled data. In the second stage of the pipeline both labeled and unlabeled SMILES are used to finetune the pretrained GPT model. From the trained GPT model new SMILES are generated which are passed through RDKit to sanitize to retain valid molecules. The trained SMILESX model is used to predict the properties of SMILES to select an appropriate set to aggregate to the unlabled dataset. The pipeline continues SMILES generations until the satisfaction of termination conditions. For more details of the pipeline please refer to the paper (paper.pdf).     
 
 
 ## Installation
@@ -22,16 +22,16 @@ Input data to the MolDisc has to be provided as a label.csv and unlabeled.csv fi
 MolDisc requires a [conda environment](https://www.anaconda.com/). 
 We recommend miniconda for non-commercial usage. Installation guide for miniconda is available here https://www.anaconda.com/docs/getting-started/miniconda/install.
 
-<!--Moldisc requires both tensorflow and torch environments. Due to possible version conflicts of tensorflow and torch MolDisc requires two separate conda environments for SMILES-X and GPT. In order to create and install the conda environments  run the requirements_main.txt and requirements_gpt.txt as follows -->
+Moldisc requires both TensorFlow and Pytorch. Due to possible version conflicts of TensorFlow and Pytorch MolDisc requires two separate conda environments for SMILES-X and GPT. <!--In order to create and install the conda environments  run the requirements_main.txt and requirements_gpt.txt as follows -->
 
 #### Setting up environment for SMILES-X
 
-Execute the following command to create the environment for SMILES-X
+Execute the following command to create the environment main_smilesx for SMILES-X installation with TensorFlow.
 
 ```
 conda create --name main_smilesx python=3.10
 ```
-The following command activates the -- environment and install the required software for SMILES-X.
+The following command activates the main_smilesx environment and install the required software for SMILES-X.
 
 ```
 conda activate main_smilesx
