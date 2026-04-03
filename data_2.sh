@@ -1,0 +1,1 @@
+python main.py  --project_name "data_2" --data_name "data_2" --data_label "data_2 label"  --data_units "data_2 unit" --smilesx_model_type 'classification' --scale_output False --max_generation 10000 --embed_bounds 512 --lstm_bounds 128 --tdense_bounds 128 --bs_bounds 32 --lr_bounds  3.5

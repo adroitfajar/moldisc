@@ -1,0 +1,6 @@
+pickledb
+pandas
+torch
+transformers==4.38.0
+accelerate==0.28.0
+logger
