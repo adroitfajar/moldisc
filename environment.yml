@@ -1,4 +1,4 @@
-name: smilesx_main
+name: moldisc_main
 channels:
   - conda-forge
   - defaults

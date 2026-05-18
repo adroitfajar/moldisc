@@ -1,4 +1,4 @@
-name: subGPT2
+name: subGPT
 channels:
   - conda-forge
   - defaults
