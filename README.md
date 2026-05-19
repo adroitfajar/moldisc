@@ -29,15 +29,15 @@ Moldisc requires both TensorFlow and Pytorch. Due to possible version conflicts 
 Execute the following command to create the environment *moldisc_main* for SMILES-X installation with TensorFlow.
 
 ```
-$conda create --name moldisc_main python=3.10
 conda env create -f environment.yml
-conda activate smilesx-test
+conda activate moldisc_main
 ```
-The following command activates the *moldisc_main* environment and install the required software for SMILES-X.
+Run the following commands to install the required SMILES-X and related software.
 
 ```
-conda activate moldisc_main
-pip install -r requirements_main.txt
+python -m venv moldisc_main
+source moldisc_main/bin/activate  # Windows: moldisc_main\Scripts\activate
+pip install -r requirements.txt
 ```
 
 #### Setting up environment for GPT2
@@ -45,14 +45,16 @@ pip install -r requirements_main.txt
 Next, Execute the following command to create the environment for GPT2 *subGPT* for GPT-2 installation with Pytorch.
 
 ```
-conda create env subGPT python=3.10
-```
-
-The following command activates the *subGPT* environment and install the required software for GPT2.
-
-```
+conda env create -f environmentGPT.yml
 conda activate subGPT
-pip install -r requirements_gpt.txt
+```
+
+After activating the *subGPT* environment and run the following commands to install necessary software for the GPT2 model.
+
+```
+python -m venv subGPT
+source subGPT/bin/activate  # Windows: subGPT-test\Scripts\activate
+pip install -r requirementsGPT.txt
 ```
 
 
