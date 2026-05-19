@@ -1,4 +1,4 @@
-# MolDisc 1.0 will be available soon . . .
+# MolDisc 1.0
 
 
 MolDisc is an autonomus molecualr discovery tool based on SMILES (Simplified Molecular Input Line Entry System). 
@@ -57,8 +57,14 @@ source subGPT/bin/activate  # Windows: subGPT-test\Scripts\activate
 pip install -r requirementsGPT.txt
 ```
 
+## Data Folder
 
-## 
+Create a folder (preferable with project name) inside the data folder to store data for traning and inference. Install labeled and unlabled smiles in CSV file format with names  labeled.csv and unlabled.csv, respectively.
+
+## Run Moldisc 
+
+Activsate *moldisc_main* 
+
 
 
 ## Tutorial
