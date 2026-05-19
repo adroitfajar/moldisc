@@ -26,15 +26,17 @@ Moldisc requires both TensorFlow and Pytorch. Due to possible version conflicts 
 
 #### Setting up environment for SMILES-X
 
-Execute the following command to create the environment *main_smilesx* for SMILES-X installation with TensorFlow.
+Execute the following command to create the environment *moldisc_main* for SMILES-X installation with TensorFlow.
 
 ```
-conda create --name main_smilesx python=3.10
+$conda create --name moldisc_main python=3.10
+conda env create -f environment.yml
+conda activate smilesx-test
 ```
-The following command activates the *main_smilesx* environment and install the required software for SMILES-X.
+The following command activates the *moldisc_main* environment and install the required software for SMILES-X.
 
 ```
-conda activate main_smilesx
+conda activate moldisc_main
 pip install -r requirements_main.txt
 ```
 
