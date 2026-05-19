@@ -61,9 +61,6 @@ pip install -r requirementsGPT.txt
 
 Create a folder (preferable with project name) inside the data folder to store data for traning and inference. Install labeled and unlabled smiles in CSV file format with names  labeled.csv and unlabled.csv, respectively.
 
-## Run Moldisc 
-
-Activsate *moldisc_main* 
 
 
 
