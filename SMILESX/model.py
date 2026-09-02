@@ -13,7 +13,7 @@ from tensorflow.keras.layers import concatenate
 import tensorflow as tf
 
 class SoftAttention(Layer):
-    def __init__(self, geom_search=False, return_prob=False, weight=None, **kwargs):
+    def __init__(self, geom_search=False, return_prob=False, weight=None, random_seed=42, **kwargs):
         """Initializes attention layer 
 
         Custom attention layer modified from https://github.com/sujitpal/eeap-examples
@@ -47,6 +47,7 @@ class SoftAttention(Layer):
         self.geom_search = geom_search
         self.return_prob = return_prob
         self.weight = weight
+        self.random_seed = int(random_seed)
         super(SoftAttention, self).__init__(**kwargs)
 
     def build(self, input_shape):
@@ -68,7 +69,7 @@ class SoftAttention(Layer):
         if self.geom_search:
             att_initializer = tf.keras.initializers.constant(value=self.weight)
         else:
-            att_initializer = tf.keras.initializers.GlorotNormal()
+            att_initializer = tf.keras.initializers.GlorotNormal(seed=self.random_seed)
 
         self.W = self.add_weight(name="W_{:s}".format(self.name),
                                  shape=(input_shape[-1], 1),
@@ -128,6 +129,7 @@ class SoftAttention(Layer):
         """Get configration of the layer"""
         base_config = super(SoftAttention, self).get_config()
         base_config['weight'] = self.weight
+        base_config['random_seed'] = self.random_seed
         return base_config
 ##
 
@@ -173,20 +175,27 @@ class LSTMAttModel:
                geom_search=False,
                return_prob=False,
                weight = None, 
-               model_type = 'regression'):
+               model_type = 'regression',
+               random_seed=42):
 
         smiles_input = Input(shape=(int(input_tokens),), name="smiles")
+
+        random_seed = int(random_seed)
 
         # Initialize with constant weights during geometry search
         if geom_search:
             embeddings_initializer = tf.keras.initializers.RandomNormal(mean=weight, stddev=weight/10, seed=0)
-            recurrent_initializer = tf.keras.initializers.constant(value=weight)
-            kernel_initializer = tf.keras.initializers.constant(value=weight)
+            lstm_recurrent_initializer = tf.keras.initializers.constant(value=weight)
+            lstm_kernel_initializer = tf.keras.initializers.constant(value=weight)
+            timedist_initializer = tf.keras.initializers.constant(value=weight)
         # Initialize for training
         else:
-            embeddings_initializer = tf.keras.initializers.he_uniform()
-            recurrent_initializer = tf.keras.initializers.Orthogonal(gain=1.0)
-            kernel_initializer = tf.keras.initializers.GlorotUniform()
+            embeddings_initializer = tf.keras.initializers.HeUniform(seed=random_seed)
+            lstm_recurrent_initializer = tf.keras.initializers.Orthogonal(
+                gain=1.0, seed=random_seed + 1
+            )
+            lstm_kernel_initializer = tf.keras.initializers.GlorotUniform(seed=random_seed + 2)
+            timedist_initializer = tf.keras.initializers.GlorotUniform(seed=random_seed + 3)
 
         embedding = Embedding(input_dim=int(vocab_size),
                               output_dim=int(embed_units),
@@ -197,19 +206,20 @@ class LSTMAttModel:
         # Bidirectional LSTM layer
         lstm = Bidirectional(LSTM(int(lstm_units),
                              return_sequences=True,
-                             kernel_initializer=kernel_initializer,
-                             recurrent_initializer=recurrent_initializer))
+                             kernel_initializer=lstm_kernel_initializer,
+                             recurrent_initializer=lstm_recurrent_initializer))
         smiles_net = lstm(smiles_net)
 
         # Time distributed layer
         timedist = TimeDistributed(Dense(int(tdense_units),
-                                         kernel_initializer=kernel_initializer))
+                                         kernel_initializer=timedist_initializer))
         smiles_net = timedist(smiles_net)
 
         # Custom attention layer
         attention = SoftAttention(geom_search=geom_search,
                                return_prob=return_prob,
                                weight=weight,
+                               random_seed=random_seed + 4,
                                name="attention")
         smiles_net = attention(smiles_net)
 
@@ -219,7 +229,7 @@ class LSTMAttModel:
             smiles_net = concatenate([smiles_net, extra_input])
 
         # In case where additional nonlinearity is added after extra input
-        if (dense_depth is not None or dense_depth > 0):
+        if dense_depth is not None and dense_depth > 0:
             dense_units = tdense_units
             # Accepts a list in case there user requests to extend the model with multiple layers
             for dense in range(dense_depth):
@@ -227,11 +237,25 @@ class LSTMAttModel:
                 # Do not add layers consisting of a single unit
                 if dense_units == 1:
                     break
-                smiles_net = Dense(int(dense_units), activation="relu", kernel_initializer=kernel_initializer)(smiles_net)
+                dense_initializer = (
+                    tf.keras.initializers.constant(value=weight)
+                    if geom_search
+                    else tf.keras.initializers.GlorotUniform(seed=random_seed + 5 + dense)
+                )
+                smiles_net = Dense(
+                    int(dense_units), activation="relu", kernel_initializer=dense_initializer
+                )(smiles_net)
 
         # Output layer
         last_activation = {'regression': 'linear', 'classification': 'sigmoid'}[model_type]
-        smiles_net = Dense(1, activation=last_activation, kernel_initializer=kernel_initializer)(smiles_net)
+        output_initializer = (
+            tf.keras.initializers.constant(value=weight)
+            if geom_search
+            else tf.keras.initializers.GlorotUniform(seed=random_seed + 100)
+        )
+        smiles_net = Dense(
+            1, activation=last_activation, kernel_initializer=output_initializer
+        )(smiles_net)
         if extra_dim is not None:
             model = Model(inputs=[smiles_input, extra_input],
                           outputs=smiles_net)

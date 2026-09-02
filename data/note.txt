@@ -1,0 +1,13 @@
+MolDisc small-data benchmark (seed 42)
+
+Active inputs contain 100 labelled and 1,000 unlabelled canonical molecules
+for each task. data_1 is aqueous-solubility regression; data_2 is BACE-1 binary
+classification. The subsets were selected from the full MoleculeNet-derived
+tables using the documented target/class/source-stratified protocol in
+README.md. Exact hashes and selection audits are in subset_manifest.json.
+
+The data_2 unlabeled source pool was also restricted to a single connected
+component and atoms B, C, N, O, F, Si, P, S, Cl, Br, and I before sampling.
+
+The unlabelled files contain SMILES only. Measurements that may exist in the
+parent public datasets were withheld and were not supplied to MolDisc.

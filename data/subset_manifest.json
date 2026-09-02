@@ -1,0 +1,196 @@
+{
+  "schema_version": 2,
+  "selection_seed": 42,
+  "random_generator": "NumPy PCG64",
+  "selection_purpose": "illustrative small-data benchmark",
+  "labelled_selection": "target-rank-stratified for regression and proportionally class-stratified for classification; properties were used only for labelled-subset construction",
+  "unlabelled_selection": "source-stratified random selection after canonicalization and global deduplication; the selected 100 labelled structures were excluded and no property values were retained; the classification pool additionally used the disclosed connected-component and allowed-element prefilter",
+  "datasets": {
+    "data_1": {
+      "task": "regression",
+      "full_source_files": {
+        "labeled_sha256": "30b1bed490ed334b1b447a00658b270345f9f611019945bbd18aa7d9b3340131",
+        "unlabeled_sha256": "92ca30f55b84a91aaf3b69c6d3e14bd7c408c643bcef65e409759c0b72257b03"
+      },
+      "full_labelled_cleaning": {
+        "raw_rows": 1128,
+        "invalid_rows": 0,
+        "duplicate_rows_removed": 11,
+        "conflicting_canonical_structures": 6,
+        "clean_unique_rows": 1117
+      },
+      "full_unlabelled_cleaning": {
+        "raw_rows": 5970,
+        "invalid_rows_by_source": {
+          "ESOL": 0,
+          "FreeSolv": 0,
+          "Lipophilicity": 0
+        },
+        "duplicate_rows_removed": 405,
+        "clean_unique_rows": 5565,
+        "source_precedence": [
+          "ESOL",
+          "FreeSolv",
+          "Lipophilicity"
+        ]
+      },
+      "labelled_selection": {
+        "target_rank_bins": 10,
+        "selected_per_bin": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ]
+      },
+      "unlabelled_selection": {
+        "eligible_unique_rows": 5465,
+        "selected_source_counts": {
+          "ESOL": 186,
+          "FreeSolv": 55,
+          "Lipophilicity": 759
+        },
+        "selected_labelled_overlap_removed": 100
+      },
+      "active_files": {
+        "labeled_rows": 100,
+        "unlabeled_rows": 1000,
+        "labeled_sha256": "44f5da497e1ebe5e5bdc00606f00afb635d80295088fa0e9574b47a3345aa9f5",
+        "unlabeled_sha256": "8a6f1e4ff92fddeef63d96c39c940e7b9db9c0b392a11b67ae60f991e74ff0fe",
+        "labeled_unique_scaffolds": 45,
+        "unlabeled_unique_scaffolds": 669
+      },
+      "full_target_summary": {
+        "mean": -3.0500581915846015,
+        "standard_deviation": 2.095456965333364,
+        "minimum": -11.6,
+        "median": -2.863,
+        "maximum": 1.58
+      },
+      "selected_target_summary": {
+        "mean": -3.00869,
+        "standard_deviation": 2.0736223256403123,
+        "minimum": -8.6,
+        "median": -2.896,
+        "maximum": 1.1
+      }
+    },
+    "data_2": {
+      "task": "classification",
+      "full_source_files": {
+        "labeled_sha256": "3f39fb544f206d32248f8420e31ecd63ff2383a767cec4206a66f44223ecbedd",
+        "unlabeled_sha256": "bce3c56498115674dc63bad6d7bb7fcf775e1e50f63c215f365f716531afcc47"
+      },
+      "full_labelled_cleaning": {
+        "raw_rows": 1513,
+        "invalid_rows": 0,
+        "duplicate_rows_removed": 0,
+        "conflicting_canonical_structures": 0,
+        "clean_unique_rows": 1513
+      },
+      "full_unlabelled_cleaning": {
+        "raw_rows": 9344,
+        "invalid_rows_by_source": {
+          "BACE": 0,
+          "Tox21": 8
+        },
+        "duplicate_rows_removed": 0,
+        "clean_unique_rows": 9336,
+        "source_precedence": [
+          "BACE",
+          "Tox21"
+        ]
+      },
+      "labelled_selection": {
+        "allocation_method": "largest remainder proportional to parent class counts",
+        "selected_class_counts": {
+          "0": 54,
+          "1": 46
+        }
+      },
+      "unlabelled_selection": {
+        "eligible_unique_rows": 8888,
+        "selected_source_counts": {
+          "BACE": 159,
+          "Tox21": 841
+        },
+        "selected_labelled_overlap_removed": 100
+      },
+      "active_files": {
+        "labeled_rows": 100,
+        "unlabeled_rows": 1000,
+        "labeled_sha256": "97ebe7fe524ededccabfc99cbe980d360a7a0dd07e9c5d3461957e4a031afe1b",
+        "unlabeled_sha256": "dd605be63275b20b205340cee51672756936c8369805bf0a1319c647198b31e1",
+        "labeled_unique_scaffolds": 85,
+        "unlabeled_unique_scaffolds": 484
+      },
+      "unlabelled_generation_domain_filter": {
+        "rule": "single connected component and atoms limited to the disclosed allowed-element set",
+        "allowed_elements": [
+          "B",
+          "Br",
+          "C",
+          "Cl",
+          "F",
+          "I",
+          "N",
+          "O",
+          "P",
+          "S",
+          "Si"
+        ],
+        "disconnected_rows_excluded": 244,
+        "disallowed_element_rows_excluded": 104,
+        "disallowed_element_counts": {
+          "As": 9,
+          "Au": 5,
+          "Ba": 2,
+          "Be": 1,
+          "Bi": 2,
+          "Ca": 1,
+          "Cd": 3,
+          "Co": 3,
+          "Cr": 3,
+          "Cu": 2,
+          "Dy": 1,
+          "Fe": 3,
+          "Ge": 1,
+          "Hg": 14,
+          "In": 3,
+          "Mn": 1,
+          "Mo": 1,
+          "Na": 2,
+          "Nd": 1,
+          "Ni": 3,
+          "Pb": 1,
+          "Pd": 1,
+          "Pt": 3,
+          "Sb": 3,
+          "Se": 6,
+          "Sn": 19,
+          "Ti": 3,
+          "Tl": 1,
+          "V": 1,
+          "Yb": 1,
+          "Zn": 3,
+          "Zr": 2
+        },
+        "eligible_rows_after_domain_filter": 8988
+      },
+      "full_class_counts": {
+        "0": 822,
+        "1": 691
+      },
+      "selected_class_counts": {
+        "0": 54,
+        "1": 46
+      }
+    }
+  }
+}

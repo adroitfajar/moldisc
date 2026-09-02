@@ -5,22 +5,23 @@
 import numpy as np
 import pandas as pd
 import os
-import glob
 
 import logging
 from tabulate import tabulate
 
-from rdkit import Chem
-
-from typing import Optional
-from typing import List
-
-from tensorflow.keras import metrics
-from tensorflow.keras import backend as K
-
 from SMILESX import utils, token, augm
 
-def infer(model, data_smiles, data_extra=None, augment=False, check_smiles: bool = True, smiles_concat: bool = False, log_verbose: bool = True):
+def infer(
+    model,
+    data_smiles,
+    data_extra=None,
+    augment=False,
+    check_smiles: bool = True,
+    smiles_concat: bool = False,
+    log_verbose: bool = True,
+    batch_size: int = 512,
+    max_augmentations=None,
+):
     """Inference based on ensemble of trained SMILESX models
 
     Prediction of the property based on the ensemble of SMILESX models.
@@ -89,7 +90,8 @@ def infer(model, data_smiles, data_extra=None, augment=False, check_smiles: bool
                                                                      data_extra=data_extra,
                                                                      data_prop=None,
                                                                      check_smiles=check_smiles,
-                                                                     augment=augment)
+                                                                     augment=augment,
+                                                                     max_augmentations=max_augmentations)
 
     # Concatenate multiple SMILES into one via 'j' joint
     if smiles_concat:
@@ -108,15 +110,23 @@ def infer(model, data_smiles, data_extra=None, augment=False, check_smiles: bool
         # Scale additional data if provided
         if model.extra:
             # Load the scalers from pickle
-            data_extra = model.extra_scaler_dic["Fold_{}".format(ifold)].transform(extra_enum)
+            extra_enum_scaled = model.extra_scaler_dic["Fold_{}".format(ifold)].transform(extra_enum)
         for run in range(model.n_runs):
             imodel = model.model_dic["Fold_{}".format(ifold)][run]
             # Predict and compare for the training, validation and test sets
             # Compute a mean per set of augmented SMILES
             if model.extra:
-                ipred = imodel.predict({"smiles": smiles_enum_tokens_tointvec, "extra": extra_enum})
+                ipred = imodel.predict(
+                    {"smiles": smiles_enum_tokens_tointvec, "extra": extra_enum_scaled},
+                    batch_size=batch_size,
+                    verbose=0,
+                )
             else:
-                ipred = imodel.predict({"smiles": smiles_enum_tokens_tointvec})
+                ipred = imodel.predict(
+                    {"smiles": smiles_enum_tokens_tointvec},
+                    batch_size=batch_size,
+                    verbose=0,
+                )
             if model.scale_output:
                 # Unscale predictions
                 ipred_unscaled = model.output_scaler_dic["Fold_{}".format(ifold)].inverse_transform(ipred.reshape(-1,1))
@@ -132,8 +142,12 @@ def infer(model, data_smiles, data_extra=None, augment=False, check_smiles: bool
     preds['mean'] = preds_mean
     preds['sigma'] = preds_std
     logging.info("")
-    logging.info("Prediction results:\n" \
-                 + tabulate(preds, ['SMILES', 'Prediction (mean)', 'Prediction (std)']))
+    preview_rows = 20
+    logging.info("Prediction results (first %s rows):\n%s",
+                 min(preview_rows, len(preds)),
+                 tabulate(preds.head(preview_rows), ['SMILES', 'Prediction (mean)', 'Prediction (std)']))
+    if len(preds) > preview_rows:
+        logging.info("%s additional prediction rows omitted from the log.", len(preds) - preview_rows)
     logging.info("")
 
     logging.info("***************************************")

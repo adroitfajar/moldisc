@@ -12,7 +12,15 @@ from rdkit import Chem
 
 from SMILESX import utils
 
-def augmentation(data_smiles, indices, data_extra=None, data_prop=None, check_smiles=True, augment=False):
+def augmentation(
+    data_smiles,
+    indices,
+    data_extra=None,
+    data_prop=None,
+    check_smiles=True,
+    augment=False,
+    max_augmentations=None,
+):
     """Augmentation
 
     Parameters
@@ -27,6 +35,9 @@ def augmentation(data_smiles, indices, data_extra=None, data_prop=None, check_sm
         Whether to verify SMILES correctness via RDKit (default: True)
     augment: bool
         Whether to augment the data by atom rotation (default: False)
+    max_augmentations: int, optional
+        Deterministic maximum number of enumerated SMILES retained per input
+        molecule. ``None`` preserves exhaustive enumeration.
 
     Returns
     -------
@@ -59,9 +70,25 @@ def augmentation(data_smiles, indices, data_extra=None, data_prop=None, check_sm
     rejected_smiles = []
     indices_to_remove = []
     
+    if max_augmentations is not None and int(max_augmentations) < 1:
+        raise ValueError("max_augmentations must be None or a positive integer.")
+
     for csmiles, ismiles in enumerate(data_smiles.tolist()):
         if augment:
             enumerated_smiles = generate_smiles(ismiles, rotate=True)
+            if (
+                max_augmentations is not None
+                and len(enumerated_smiles) > int(max_augmentations)
+            ):
+                retained_indices = np.linspace(
+                    0,
+                    len(enumerated_smiles) - 1,
+                    num=int(max_augmentations),
+                    dtype=int,
+                )
+                enumerated_smiles = [
+                    enumerated_smiles[index] for index in retained_indices
+                ]
         else:
             if check_smiles:
                 enumerated_smiles = generate_smiles(ismiles, rotate=False)

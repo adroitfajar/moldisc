@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environments and notebooks
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Superseded local prototype entry points (public tutorials live in notebooks/)
+example-moldisc.ipynb
+expr.py
+data_1.sh
+data_2.sh
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Runtime downloads, models, logs, and generated campaigns
+tmp/
+projects/
+results/*
+!results/README.md
+
+# Preserved full source tables; the public repository contains the documented
+# small-data subsets and their reproducible selection manifest.
+data/full_source/
+
+# Local article copies; public repositories should link to the publisher/DOI
+references/*.pdf
+
+# Local manuscript drafts and render QA are not part of the software release
+manuscript/
+
+# Local secrets
+.env
+*.pem
+*.key

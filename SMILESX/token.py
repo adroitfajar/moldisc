@@ -7,8 +7,6 @@ import ast
 
 import numpy as np
 
-from tensorflow.keras import backend as K
-
 def int_vec_encode(tokenized_smiles_list, max_length, vocab):
     """Encodes SMILES as a vector of integers
 
@@ -96,13 +94,13 @@ def smiles_tokenizer(smiles):
         List of tokens extended with a termination character ' '
     """
 
-    patterns = "(\*|" +\
-               "N|O|S|P|F|Cl?|Br?|I|" +\
-               "b|c|n|o|s|p|j|" +\
-               "\[.*?\]|" +\
-               "-|=|#|\$|:|/|\\|\.|" +\
-               "[0-9]|\%[0-9]{2}|" +\
-               "\(|\))"
+    patterns = (r"(\*|"
+                r"N|O|S|P|F|Cl?|Br?|I|"
+                r"b|c|n|o|s|p|j|"
+                r"\[.*?\]|"
+                r"-|=|#|\$|:|/|\\|\.|"
+                r"[0-9]|%[0-9]{2}|"
+                r"\(|\))")
     regex = re.compile(patterns)
     try:
         tokens = [token for token in regex.findall(smiles)]

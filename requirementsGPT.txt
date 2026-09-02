@@ -1,6 +1,8 @@
-pickledb
-pandas
-torch
+# GPT environment (Python 3.10)
+numpy==1.26.4
+pandas==2.2.3
+torch==2.5.1
 transformers==4.38.0
 accelerate==0.28.0
-logger
+rdkit==2025.3.6
+ipykernel==6.29.5

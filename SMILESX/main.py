@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import LearningRateScheduler
+from tensorflow.keras.callbacks import EarlyStopping, LearningRateScheduler
 from tensorflow.keras.models import load_model
 from tensorflow.keras import metrics
 from tensorflow.keras import backend as K
@@ -90,6 +90,7 @@ def main(data_smiles,
          n_runs: Optional[int] = None,
          check_smiles: bool = True,
          augmentation: bool = False,
+         augmentation_max_per_molecule: Optional[int] = None,
          geom_sample_size: int = 32,
          bayopt_n_rounds: int = 25,
          bayopt_n_epochs: int = 30,
@@ -107,7 +108,8 @@ def main(data_smiles,
          lr_max: float = 1e-2,
          prec: int = 4,
          log_verbose: bool = True,
-         train_verbose: bool = True) -> None:
+         train_verbose: bool = True,
+         random_seed: int = 42) -> None:
     
     #TODO(Guillaume): Do not mention copolymers yet in smiles_concat but will be added later
     #TODO(Guillaume): Check utils.smiles_concat function to prevent misusage when one SMILES/entry
@@ -316,6 +318,9 @@ def main(data_smiles,
     '''
 
     # TODO(katia): update Returns list above
+    random_seed = int(random_seed)
+    np.random.seed(random_seed)
+    tf.keras.utils.set_random_seed(random_seed)
     start_time = time.time()
 
     # Define and create output directories
@@ -527,7 +532,9 @@ def main(data_smiles,
         model_metrics = [metrics.mae, metrics.mse]
     elif model_type == 'classification':
         scale_output = False
-        kf = StratifiedKFold(n_splits=k_fold_number, shuffle=True, random_state=42)
+        kf = StratifiedKFold(
+            n_splits=k_fold_number, shuffle=True, random_state=random_seed
+        )
         kf.get_n_splits(X=data_smiles, y=data_prop)
         kf_splits = kf.split(X=data_smiles, y=data_prop)
         model_loss = 'binary_crossentropy'
@@ -572,7 +579,8 @@ def main(data_smiles,
                                                                 extra_input = data_extra,
                                                                 err_input = data_err,
                                                                 train_val_idx = train_val_idx,
-                                                                test_idx = test_idx)
+                                                                test_idx = test_idx,
+                                                                random_seed = random_seed + ifold)
         # Scale the outputs
         if scale_output:
             scaler_out_file = '{}/{}_Scaler_Outputs'.format(scaler_dir, data_name)
@@ -598,21 +606,24 @@ def main(data_smiles,
                                        extra_train,
                                        y_train_scaled,
                                        check_smiles,
-                                       augmentation)
+                                       augmentation,
+                                       augmentation_max_per_molecule)
 
         valid_augm = augm.augmentation(x_valid,
                                        train_val_idx,
                                        extra_valid,
                                        y_valid_scaled,
                                        check_smiles,
-                                       augmentation)
+                                       augmentation,
+                                       augmentation_max_per_molecule)
 
         test_augm = augm.augmentation(x_test,
                                       test_idx,
                                       extra_test,
                                       y_test_scaled,
                                       check_smiles,
-                                      augmentation)
+                                      augmentation,
+                                      augmentation_max_per_molecule)
         
         x_train_enum, extra_train_enum, y_train_enum, y_train_clean, x_train_enum_card, _ = train_augm
         x_valid_enum, extra_valid_enum, y_valid_enum, y_valid_clean, x_valid_enum_card, _ = valid_augm
@@ -815,6 +826,8 @@ def main(data_smiles,
         
         for run in range(n_runs):
             start_run = time.time()
+            model_seed = random_seed + ifold * max(1, n_runs) + run
+            tf.keras.utils.set_random_seed(model_seed)
 
             # In case only some of the runs are requested for training
             if run_index is not None:
@@ -855,7 +868,8 @@ def main(data_smiles,
                                                                 lstm_units=hyper_opt["LSTM"],
                                                                 tdense_units=hyper_opt["TD dense"],
                                                                 dense_depth=dense_depth,
-                                                                model_type=model_type)
+                                                                model_type=model_type,
+                                                                random_seed=model_seed)
                         custom_adam = Adam(lr=math.pow(10,-float(hyper_opt["Learning rate"])))
                         model_train.compile(loss=model_loss, optimizer=custom_adam, metrics=model_metrics)
                     if (nfold==0 and run==0):
@@ -953,6 +967,16 @@ def main(data_smiles,
                     logcallback = trainutils.LoggingCallback(print_fcn=logging.info,verbose=train_verbose)
                     # Default callback list
                     callbacks_list = [ignorebeginning, logcallback]
+                    if patience is not None and int(patience) > 0:
+                        callbacks_list.append(
+                            EarlyStopping(
+                                monitor="val_loss",
+                                patience=int(patience),
+                                mode="min",
+                                restore_best_weights=False,
+                                verbose=1 if train_verbose else 0,
+                            )
+                        )
                     # Additional callbacks
                     if lr_schedule == 'decay':
                         schedule = trainutils.StepDecay(initAlpha=lr_max,

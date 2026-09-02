@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "moldisc"
+version = "0.2.0"
+description = "Closed-loop molecular discovery with GPT-2, SMILES-X, and RDKit"
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Kishan Wimalawarne"},
+  {name = "Guillaume Lambard"},
+  {name = "Adroit Fajar"}
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Scientific/Engineering :: Chemistry"
+]
+
+[project.urls]
+Homepage = "https://github.com/adroitfajar/moldisc"
+Repository = "https://github.com/adroitfajar/moldisc"
+Issues = "https://github.com/adroitfajar/moldisc/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.setuptools]
+py-modules = ["moldisc", "mainGPT", "sascore"]
+
+[tool.setuptools.packages.find]
+include = ["SMILESX*", "models*"]
+namespaces = true
+
+[tool.setuptools.package-data]
+models = ["fpscores.pkl.gz"]

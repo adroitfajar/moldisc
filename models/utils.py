@@ -7,9 +7,7 @@ Created on Tue Nov 11 10:39:39 2025
 """
 
 
-import pandas as pd
-import torch
-from torch.utils.data import Dataset, random_split
+from torch.utils.data import Dataset
 from rdkit import Chem, RDLogger
 import logging  # alternative?
 
@@ -17,15 +15,28 @@ import logging  # alternative?
 
 #from rdkit import RDLogger 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # This avoids printing of exception error when calling Chem.MolFromSmiles
 RDLogger.DisableLog('rdApp.*')
 
 def remove_residual(smiles):
-    smiles=Chem.MolToSmiles(Chem.MolFromSmiles(smiles), canonical=True)
-    return smiles
+    canonical_smiles, _ = canonicalize_smiles(smiles)
+    return canonical_smiles
+
+
+def canonicalize_smiles(smiles):
+    """Return a sanitized canonical SMILES and its RDKit molecule."""
+    try:
+        mol = Chem.MolFromSmiles(smiles)
+        if mol is None:
+            return None, None
+        Chem.SanitizeMol(mol)
+        return Chem.MolToSmiles(mol, canonical=True), mol
+    except Exception as exc:
+        logger.debug("Invalid SMILES %r: %s", smiles, exc)
+        return None, None
 
 def is_valid_smiles(smiles):
     try:
@@ -45,10 +56,12 @@ class SmilesDataset(Dataset):
         return len(self.input_ids)
 
     def __getitem__(self, idx):
+        labels = self.input_ids[idx].clone()
+        labels[self.attention_mask[idx] == 0] = -100
         return {
             'input_ids': self.input_ids[idx],
             'attention_mask': self.attention_mask[idx],
-            'labels': self.input_ids[idx]
+            'labels': labels
         }
     
 # validate SMILES   #  Adroit's code    
@@ -78,7 +91,7 @@ def augment_smiles(smiles, num_augmentations=5):
     augmented_smiles.add(Chem.MolToSmiles(mol, canonical=True))
     
     for _ in range(num_augmentations):
-        augmented_smiles.add(Chem.MolToSmiles(mol, canonical=False))
+        augmented_smiles.add(Chem.MolToSmiles(mol, canonical=False, doRandom=True))
     
     return list(augmented_smiles)
 

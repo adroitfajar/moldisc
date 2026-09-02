@@ -500,7 +500,8 @@ class SmilesxWrapper():
             prediction_test_bag = np.zeros((y_test_enum.shape[0], n_runs))        
 
 
-    def train(self, ):
-        
-        
-    def inference(self, ):
+    def train(self):
+        raise NotImplementedError("SmilesxWrapper.train has not been implemented.")
+
+    def inference(self):
+        raise NotImplementedError("SmilesxWrapper.inference has not been implemented.")

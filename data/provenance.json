@@ -1,0 +1,34 @@
+{
+  "active_dataset_role": "small-data demonstration and article benchmark",
+  "selection_seed": 42,
+  "active_counts": {
+    "data_1": {"labeled": 100, "unlabeled": 1000},
+    "data_2": {"labeled": 100, "unlabeled": 1000}
+  },
+  "active_sha256": {
+    "data_1/labeled.csv": "44f5da497e1ebe5e5bdc00606f00afb635d80295088fa0e9574b47a3345aa9f5",
+    "data_1/unlabeled.csv": "8a6f1e4ff92fddeef63d96c39c940e7b9db9c0b392a11b67ae60f991e74ff0fe",
+    "data_2/labeled.csv": "97ebe7fe524ededccabfc99cbe980d360a7a0dd07e9c5d3461957e4a031afe1b",
+    "data_2/unlabeled.csv": "dd605be63275b20b205340cee51672756936c8369805bf0a1319c647198b31e1"
+  },
+  "full_source_sha256": {
+    "data_1/labeled.csv": "30b1bed490ed334b1b447a00658b270345f9f611019945bbd18aa7d9b3340131",
+    "data_1/unlabeled.csv": "92ca30f55b84a91aaf3b69c6d3e14bd7c408c643bcef65e409759c0b72257b03",
+    "data_2/labeled.csv": "3f39fb544f206d32248f8420e31ecd63ff2383a767cec4206a66f44223ecbedd",
+    "data_2/unlabeled.csv": "bce3c56498115674dc63bad6d7bb7fcf775e1e50f63c215f365f716531afcc47"
+  },
+  "deepchem_source_snapshots": {
+    "delaney-processed.csv": "8c06a76f0c6487d29ab0f903e6a7a7139f189ab3c1178f159c8be8964602f189",
+    "SAMPL.csv": "ab5895d914ee87cb563bd7b9611e869527bba45bec6b014d34dc495a0f9dcb72",
+    "Lipophilicity.csv": "aed41590cb30609d51d8e08ad3ff06495a76e80e211358801f596b10da69bacd",
+    "bace.csv": "f3fb9ce90bada3e2bd6148b0df13f8f8145a357bf87df0dd5b391ede974fc737",
+    "tox21.csv.gz": "45d09792492ce049039dd24aa27b07fc79ce20c573187d4d90bcd178c0c0d360"
+  },
+  "selection_details": "subset_manifest.json",
+  "data_2_generation_domain": {
+    "single_connected_component": true,
+    "allowed_elements": ["B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "Br", "I"]
+  },
+  "full_source_archive": "data/full_source (local, excluded from Git)",
+  "local_files_are_frozen_inputs": true
+}

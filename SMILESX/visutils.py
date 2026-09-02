@@ -75,11 +75,11 @@ def classification_metrics(y_true, y_pred):
     # accuracy: (tp + tn) / (p + n)
     accuracy = accuracy_score(y_true, y_pred_class)
     # precision tp / (tp + fp)
-    precision = precision_score(y_true, y_pred_class)
+    precision = precision_score(y_true, y_pred_class, zero_division=0)
     # recall: tp / (tp + fn)
-    recall = recall_score(y_true, y_pred_class)
+    recall = recall_score(y_true, y_pred_class, zero_division=0)
     # f1: 2 tp / (2 tp + fp + fn)
-    f1 = f1_score(y_true, y_pred_class)
+    f1 = f1_score(y_true, y_pred_class, zero_division=0)
     # AUC
     prp_precision, prp_recall, _ = precision_recall_curve(y_true, y_pred)
     prp_auc = auc(prp_recall, prp_precision)
@@ -407,7 +407,13 @@ def plot_fit(trues, preds, errs_true, errs_pred, err_bars: str, save_dir: str, d
             # plot the precision-recall curves
             prp_precision, prp_recall, prp_th = precision_recall_curve(true, pred)
             # calculate f score
-            fscore = (2 * prp_precision * prp_recall) / (prp_precision + prp_recall)
+            denominator = prp_precision + prp_recall
+            fscore = np.divide(
+                2 * prp_precision * prp_recall,
+                denominator,
+                out=np.zeros_like(denominator),
+                where=denominator != 0,
+            )
             # locate the index of the largest f score
             best_fscore_idx = np.argmax(fscore)
             logging.info("Precision-Recall curve best threshold = {0:0.4f}, F1 = {1:0.4f}\n".format(prp_th[best_fscore_idx], fscore[best_fscore_idx]))

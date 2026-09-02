@@ -168,11 +168,11 @@ def interpret(model, smiles, true=None, true_err=None, pred=None, log_verbose: b
                     true_val += "$_{{-{0}}}^{{+{1}}}$".format(str(true_err[i, 0]),
                                                               str(true_err[i, 1]))
                 elif err_format == 'std':
-                    true_val += "$\pm$ {1:0.02f}".format(true_err[i])
+                    true_val += r"$\pm$ {0:0.02f}".format(true_err[i])
         else:
             true_val = None
         if print_pred:
-            pred_val="{1:{0}f} $\pm$ {2:{0}f}".format(prec,
+            pred_val=r"{1:{0}f} $\pm$ {2:{0}f}".format(prec,
                                                       pred[i, 0],
                                                       pred[i, 1])
         else:

@@ -1,1 +1,0 @@
-python main.py  --project_name "data_1" --data_name "data_1" --data_label "data_1 label"  --data_units "data_1 unit" --cycles 5 

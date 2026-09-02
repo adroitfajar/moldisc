@@ -139,7 +139,8 @@ def log_setup(save_dir, name, verbose):
     
     # Setting up logging
     currentDT = datetime.datetime.now()
-    strDT = currentDT.strftime("%Y-%m-%d_%H:%M:%S")
+    # Colons are not valid in Windows filenames.
+    strDT = currentDT.strftime("%Y-%m-%d_%H-%M-%S")
        
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)    
@@ -166,7 +167,16 @@ def log_setup(save_dir, name, verbose):
     return logger, logfile
 ##
 
-def rand_split(smiles_input, prop_input, extra_input, err_input, train_val_idx, test_idx, bayopt = False):
+def rand_split(
+    smiles_input,
+    prop_input,
+    extra_input,
+    err_input,
+    train_val_idx,
+    test_idx,
+    bayopt=False,
+    random_seed=42,
+):
     """Splits into train, valid, test sets, and standardizes the target property (mean 0, std 1).
 
     Parameters
@@ -215,8 +225,8 @@ def rand_split(smiles_input, prop_input, extra_input, err_input, train_val_idx, 
     """
     
     # Assure random training/validation split (test set is unchanged)
-    np.random.seed(42)
-    np.random.shuffle(train_val_idx)
+    split_rng = np.random.default_rng(int(random_seed))
+    split_rng.shuffle(train_val_idx)
     
     # How many samples goes to training
     # We perform 7:2:1 split for train:val:test sets
